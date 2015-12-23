@@ -15,7 +15,9 @@ public class Graph
   float min = 2;
   int smallest_index = -1;
   PVector pixel;
+  float point_size = 20;
 
+  float growth_rate;
 
   /* Constructor */
   public Graph()
@@ -23,39 +25,37 @@ public class Graph
     Points = new ArrayList<PVector>();
     IsSelected = new ArrayList<Boolean>();
     ToRemove = new ArrayList<PVector>();
-
-    LPShapes = new ArrayList<LPShape>();
   }
 
   /* Render Function */
   void render(Frame f) 
   {
     /* Update the p_norm according to the slider */
-    p_norm = ((pAdjuster.value) * 30f) + 1f;
-
-    /* Update the p_norms of the LP shapes */
-    for (LPShape LP : LPShapes)
-    {
-      LP.p = p_norm;
-    }
+    p_norm = pAdjuster.value;
 
     /* BRUTE FORCE Pixel-by-Pixel Voronoi Calculation :( */
     for (int i = 0; i < dpi; i++) {  
       for (int j = 0; j < dpi; j++) {
-        min = 2;
+        min = 5;
         smallest_index = -1;
         pixel = new PVector(i / dpi, j / dpi);
-        for (int k = 0; k < LPShapes.size (); k++)
+        for (int k = 0; k < Points.size(); k++)
         {
-          float d = f.LPDistance(pixel, LPShapes.get(k).position, p_norm);
-          if (d < min)
+          float d = f.LPDistance(pixel, Points.get(k), p_norm);
+          if (d < min && d < growth_rate)
           {
             min = d; 
             smallest_index = k;
           }
         }
-        stroke(color(0, 0, 255.0 * (smallest_index + 1) / LPShapes.size()));
-        fill(color(0, 0, 255.0 * (smallest_index + 1) / LPShapes.size()));
+        stroke(color(
+          (smallest_index + 1) * 60 % 255, 
+          (smallest_index + 1) * 170 % 255, 
+          (smallest_index + 1) * 225 % 255));//255.0 * (smallest_index + 1) / Points.size()));
+        fill(color(
+          (smallest_index + 1) * 60 % 255, 
+          (smallest_index + 1) * 170 % 255, 
+          (smallest_index + 1) * 225 % 255));
         rect(f.x + pixel.x * f.w, f.y + pixel.y * f.h, f.w / dpi, f.h / dpi);
       }
     }
@@ -65,14 +65,14 @@ public class Graph
     {
       /* User clicks on point */
       if (mousePressed) {
-        if (f.IsMouseInPoint(p, pAdjuster.value * 25))
+        if (f.IsMouseInPoint(p, point_size))
         {
           /* Remove if it is a right click */
           if (mouseButton == RIGHT)
           {
             ToRemove.add(p);
 
-            /* Select if standard click, don't allow addition of new points */
+          /* Select if standard click, don't allow addition of new points */
           } else {
             IsAdditionAllowed = false;
             IsSelected.set(Points.indexOf(p), true);
@@ -95,7 +95,7 @@ public class Graph
 
       /* Draw the point in the graph */
       stroke(0);
-      ellipse(f.x + p.x * f.w, f.y + p.y * f.h, 20, 20);
+      ellipse(f.x + p.x * f.w, f.y + p.y * f.h, point_size, point_size);
     }
 
     /* Remove deleted points from graph */
@@ -110,7 +110,6 @@ public class Graph
     if (mousePressed) {
       if (f.IsMouseInside() && IsAdditionAllowed) {
         Points.add(new PVector(1.0 * mouseX / f.w, 1.0 * mouseY / f.h));
-        LPShapes.add(new LPShape(Points.get(Points.size() - 1), p_norm, .1f));
         IsSelected.add(false);
       }
       IsAdditionAllowed = false;

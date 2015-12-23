@@ -1,21 +1,38 @@
 public class Slider
 {
   public float value;
+  float max_value;
+  float min_value;
   float radius = 25;
   float barWidth = 10;
 
   boolean IsPositionUpdating = false;
 
-  public Slider()
+  boolean IsVertical;
+
+  public Slider(float min, float max, boolean isVertical)
   {
     /* Arbitrary! Starting in middle */
-    value = .5;
+    IsVertical = isVertical;
+    max_value = max;
+    min_value = min;
+    value = (max + min) / 2;
   } 
 
   void render(Frame f)
   {
-    radius = f.w/2;
-    barWidth = f.w/4;
+    fill(30);
+    rect(f.x, f.y, f.w, f.h);
+
+    if (IsVertical)
+    {
+      radius = f.w/2;
+      barWidth = f.w/4;
+    } else {
+      radius = f.h / 2; 
+      barWidth = f.h/4;
+    }
+
 
     /* Update Position when user moves slider */
     if (mousePressed)
@@ -32,18 +49,42 @@ public class Slider
     }
 
     if (IsPositionUpdating == true) {
-      value = constrain(1.0 * mouseY / height, 0, 1);
+      if (IsVertical)
+      {
+        value = constrain((max_value - min_value) * (mouseY - f.y) / f.h, min_value, max_value);
+      } else {
+        value = constrain((max_value - min_value) * (mouseX - f.x) / f.w, min_value, max_value);
+      }
     }
 
     /* Draw the "tray" */
-    fill(255);
-    stroke(0);
-    rect(f.x + radius - barWidth/2, f.y, barWidth, f.h);
+    fill(175);
+    noStroke();
+    if (IsVertical) 
+    {
+      rect(f.x + radius - barWidth/2, f.y, barWidth, f.h);
+    } else {
+      rect(f.x, f.y + radius - barWidth/2, f.w, barWidth);
+    }
 
     /* Draw the "handle" */
     fill(80, 100, 150);
-    ellipse(f.x + radius, f.y + value * f.h, radius * 2, radius * 2);
+    noStroke();
 
+    if (IsVertical)
+    {
+      ellipse(f.x + radius, f.y + ((value - min_value) / (max_value - min_value)) * f.h, radius * 2 - 2, radius * 2 - 2);
+    } else {
+      ellipse(f.x + ((value - min_value) / (max_value - min_value)) * f.w, f.y + radius, radius * 2 - 2, radius * 2 - 2);
+    }
+
+    fill (255);
+    textAlign(CENTER,CENTER);
+    if (IsVertical) {
+      text(value, f.x + radius, f.y + ((value - min_value) / (max_value - min_value)) * f.h);
+    } else {
+      text(value, f.x + ((value - min_value) / (max_value - min_value)) * f.w, f.y + radius);
+    }
     /* Reset the fill color */
     fill(255);
   }
