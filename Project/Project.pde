@@ -1,6 +1,5 @@
 Slider pAdjuster, rAdjuster;
 Graph g;
-PlayButton playButton;
 
 Frame SliderFrame;
 Frame GraphFrame;
@@ -12,7 +11,7 @@ void setup() {
   frame.setResizable(true);
   size(600, 600);
 
-  pAdjuster = new Slider(1, 100, true);
+  pAdjuster = new Slider(1, 25, true);
   rAdjuster = new Slider(0, 1, false);
   pAdjuster.value = 2;
   rAdjuster.value = 0;

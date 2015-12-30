@@ -7,7 +7,6 @@ public class Graph
 
   private boolean IsAdditionAllowed = false;
 
-  ArrayList<LPShape> LPShapes;
 
   float p_norm = 1f;
 
