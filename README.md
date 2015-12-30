@@ -1,11 +1,13 @@
+![Voronoi Diagrams](http://i.imgur.com/LoKOAGg.png?1)
+
 # Lp-Voronoi-Visualization
 A simple way of creating Voronoi diagrams in arbitrary Lp spaces
 
+## Lp Unit Circles for arbitrary p-values
+
 ![Lp Vector-p-Norms](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Vector-p-Norms_qtl1.svg/410px-Vector-p-Norms_qtl1.svg.png)
 
-![Voronoi Diagrams](http://i.imgur.com/LoKOAGg.png?1)
-
-## Instructions
+## Application Instructions
 - To create a vertex, click with your mouse
 - To delete a vertex, right click on the vertex you wish to remove
 - The horizontal slider on the bottom changes the size of the radii growign from the vertices
